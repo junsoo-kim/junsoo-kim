@@ -85,7 +85,7 @@
  
 
 ![pre-filter](./img/depthfiltering/pre-filter.PNG)
-![post-filter](./img/depthfiltering/post-filter.png)
+![post-filter](./img/depthfiltering/post-filter.PNG)
 
 ## 📞 Contact  
 📧 Email: goliath917@gmail.com  
