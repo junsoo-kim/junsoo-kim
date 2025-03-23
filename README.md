@@ -79,6 +79,13 @@
 성과 및 결과
 - 렌더링 시 아티팩트가 감소되는 깊이 이미지 획득
 
+
+<img src="./img/depthfiltering/pre-filter.png", height="100", width="100">
+<img src="./img/depthfiltering/post-filter.png", height="100", width="100"> 
+
+<!-- ![pre-filter](./img/depthfiltering/pre-filter.png) -->
+<!-- ![pre-filter](./Images/depthfiltering/post-filter.png) -->
+
 ## 📞 Contact  
 📧 Email: goliath917@gmail.com  
 📂 Portfolio: [GitHub](https://github.com/junsoo-kim)
