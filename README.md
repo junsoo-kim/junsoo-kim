@@ -1,4 +1,9 @@
 ## 성장하는 백엔드 개발자, 김준수입니다 :rocket:
+
+<a href="https://kjsoo-portfolio.vercel.app/">
+  <img width="700" height="200" alt="portfolio buttion" src="https://github.com/user-attachments/assets/1b674927-d8ee-4288-9057-3f8551fc50c7" />
+</a>
+
 ## History
 
 <table>
