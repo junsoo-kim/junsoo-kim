@@ -52,11 +52,4 @@
 <br>
 ![Figma](https://img.shields.io/badge/Figma-F24E1E.svg?&style=for-the-badge&logo=Figma&logoColor=white)
 
-## Stats Info
-![JoonSoo-Kim's GitHub stats](https://github-readme-stats.vercel.app/api?username=JoonSoo-Kim&show_icons=true&theme=dark)
-
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=JoonSoo-Kim&layout=compact&theme=dark)
-
-[![Solved.ac Profile](http://mazassumnida.wtf/api/generate_badge?boj=rlawnstn0904)](https://solved.ac/rlawnstn0904)
-
 
