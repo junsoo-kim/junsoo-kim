@@ -8,7 +8,7 @@
 웹 백엔드, 클라우드 등 보이지 않는 곳을 지탱하는 기술을 배워왔고<br>
 최근에는 하네스 엔지니어링, 멀티 에이전틱 시스템 등 AI 신기술에 관심이 많습니다. 
 
-📮 [kjsoo1901@gmail.com](mailto:kjsoo1901@gmail.com) · 🔗 [Portfolio](https://kjsoo-portfolio.vercel.app/) · 💼 [LinkedIn](https://www.linkedin.com/in/%EC%A4%80%EC%88%98-%EA%B9%80-7a31952a4/)
+📮 [kjsoo1901@gmail.com](mailto:kjsoo1901@gmail.com) · 🔗 [Portfolio](https://kjsoo-portfolio.vercel.app/) · 💼 [LinkedIn](https://www.linkedin.com/in/junsoo-kim-dev/)
 
 
 
