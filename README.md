@@ -40,8 +40,9 @@
 
 - Spring Boot(API) / FastAPI(RAG) / React(FE) 3-서버 구조 설계
 - 데이터 성격에 따라 PostgreSQL · Milvus · Redis 를 분리 운영
-- AWS Academy 수료 경험을 토대로 AWS 기반 배포 진행
-- 생성 결과물을 실제 증권사 보고서와 비교 검증 — 핵심 정보 Recall 0.50 (실제 보고서 평균 0.45)
+- 임베딩 유사도 검색만으로는 놓치던 수치·고유명사 문서를 잡기 위해 BM25 하이브리드 검색을 직접 구축 — 정답 문서 회수율 Hit@10 0.73 → 0.98
+- 생성 결과를 스스로 검증하는 LangGraph 루프(채점 → 생성 → 환각 채점 → 재검색)를 추가해 근거 있는 문장 비율 77.5% → 95.5%
+- 자원 경합으로 서비스 전체가 멈춘 장애 이후 백엔드·AI·데이터 계층을 VPC 내로 분리, 보안그룹 체인을 Terraform 11개 모듈로 코드화
 
 ### 🌙 [별숲 ByeolSoop](https://github.com/boostcampwm2023/web08-ByeolSoop) — 3D 밤하늘 감정 다이어리 ⭐27
 
@@ -49,9 +50,9 @@
 
 일기를 3D 밤하늘의 별로 그리고, 감정 분석 결과에 따라 별 색이 바뀌는 다이어리 서비스.
 
-- 액세스 토큰 탈취를 서버가 막을 수 없다는 한계 때문에 Stateless JWT를 Stateful 방식으로 전환, 리프레시 토큰 페이로드에 토큰·클라이언트 IP를 저장해 중복 로그인까지 차단
-- JwtAuthGuard · PrivateDiaryGuard 커스텀 가드로 타인의 일기 접근을 요청 단계에서 통제
-- 매 테스트마다 DB를 초기화하던 구조를 트랜잭션 롤백 방식으로 바꿔 테스트 시간 50% 이상 단축
+- OWASP Top 10 기준으로 점검하다 탈취된 액세스 토큰을 서버가 끊을 방법이 없다는 걸 확인, 리프레시 토큰을 Redis에 사용자 단위로 보관하고 발급 토큰·접속 IP를 매 요청 대조하는 Stateful 구조로 재설계
+- JwtAuthGuard 위에 PrivateDiaryGuard로 인가를 한 겹 더 쌓아 정상 토큰으로도 타인의 일기 접근을 차단, 리소스 존재 여부가 드러나지 않도록 403 대신 404로 응답
+- 4인 팀 안에서 풀리지 않던 기술 난관을 다른 팀과의 코드 리뷰로 확인·해결하며 FE·BE 상태 코드 처리 흐름을 조율
 
 ### 📈 [VIN](https://github.com/Junsoo-Kim/VIN) — 리스크 헷지 기반 ETF 추천 서비스
 
@@ -59,9 +60,9 @@
 
 한국·미국 ETF 1,100여 개의 상관관계를 분석해, 개인 투자자에게 헷지 조합을 추천.
 
-- 주가 데이터의 비선형성 때문에 피어슨·스피어만 상관계수를 그대로 쓸 수 없었던 문제 — 부호는 스피어만, 값은 피어슨을 쓰는 방식으로 두 지표의 한계를 상호 보완
-- Apache Airflow DAG로 Spring Boot ↔ Python 분석 워크플로우 연결 — 수집·전처리·분석·후처리가 순차적으로 필요해, 일반 Python 웹서버 대신 워크플로우 엔진을 REST로 트리거하는 구조 채택
-- LLM에 리커트 척도를 적용해 서술형 설문 응답의 편차를 줄이고, −100 ~ 100 범위의 투자 위험 감수 성향 점수 산출
+- 목록 조회 후 종목마다 상세를 다시 조회해 쿼리가 3N+2로 늘어나던 구조를 연관관계별 Fetch 전략 이원화로 해결 — 종목 50개 기준 152 → 2쿼리, 응답 0.1093s → 0.0112s(9.8배)
+- 매수 이력 적재를 Kafka로 비동기 분리한 뒤 생긴 "조용한 유실" 위험을 지수 백오프 재시도 + DLT 보상 레코드로 차단 — 동시 매수 30건 유실률 0%, 실패 3건 전부 복구
+- 분산 락을 걸었는데도 드물게 정합성이 깨지던 문제를 추적해 락 해제가 트랜잭션 커밋보다 먼저 실행되는 Spring AOP 프록시 순서 문제였음을 밝혀내고, 락·트랜잭션 빈을 물리적으로 분리해 해결
 
 ### 🧑‍🏫 [Setuk-AI](https://github.com/Junsoo-Kim/Setuk-AI) — 교사 세부능력특기사항 작성 AI 하네스
 
@@ -69,9 +70,9 @@
 
 학생 활동 보고서를 통해 규정을 지킨 세특 초안을 완벽하게 생성하는, LLM 위에 얹는 하네스
 
-- 프롬프트 한 덩어리 대신 데이터 구조화 → 초안 작성 → 검증 → 평가 4단계로 분리해, 각 단계를 독립적으로 수정·교체할 수 있는 구조 설계
-- 세특 작성 규정을 rules.json으로 외부화하고, 글자 수·표현 검사를 린터 스크립트로 자동화해 출력이 규정을 벗어나는 경우를 기계적으로 걸러냄
-- 학생 1명당 세션 1개로 컨텍스트를 격리 — 학생 간 정보 교차 오염을 막고 토큰 사용량 절감
+- 프롬프트 한 덩어리 대신 입력 → 사실 구조화 → 초안 → 평가 4단계로 분리해, 근거가 부족하면 AI가 지어내지 않고 멈춰 되묻도록 설계
+- 세특 작성 규정을 rules.json으로 외부화하고 글자 수·표현 위반을 린터로 기계적으로 걸러내며, 핵심 안전장치 문구는 자동 테스트로 고정해 지침 문서에만 존재하다 조용히 사라지지 않게 함
+- 설치 부담과 품질 요구라는 서로 다른 사용자 피드백을 한 아키텍처에 욱여넣지 않고 웹 업로드형(A) · VSCode(B) · LangGraph 기반(C) 3개 배포 트랙으로 분리 — 교사 80명 이상 실사용
 
 <br>
 
@@ -87,13 +88,18 @@
 ![Python](https://img.shields.io/badge/Python-3776AB.svg?&style=for-the-badge&logo=Python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688.svg?&style=for-the-badge&logo=FastAPI&logoColor=white)
 
-#### Database
-![MySQL](https://img.shields.io/badge/MySQL-4479A1.svg?&style=for-the-badge&logo=MySQL&logoColor=white)
+#### Data
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1.svg?&style=for-the-badge&logo=PostgreSQL&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D.svg?&style=for-the-badge&logo=Redis&logoColor=white)
+<br>
+![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-231F20.svg?&style=for-the-badge&logo=ApacheKafka&logoColor=white)
 ![Milvus](https://img.shields.io/badge/Milvus-00A1EA.svg?&style=for-the-badge&logo=Milvus&logoColor=white)
+<br>
+![Apache Airflow](https://img.shields.io/badge/Apache%20Airflow-017CEE.svg?&style=for-the-badge&logo=ApacheAirflow&logoColor=white)
 
 #### Infra & Tools
 ![AWS](https://img.shields.io/badge/AWS-232F3E.svg?&style=for-the-badge&logo=amazonwebservices&logoColor=white)
+![Terraform](https://img.shields.io/badge/Terraform-7B42BC.svg?&style=for-the-badge&logo=Terraform&logoColor=white)
+<br>
 ![Docker](https://img.shields.io/badge/Docker-2496ED.svg?&style=for-the-badge&logo=Docker&logoColor=white)
 ![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF.svg?&style=for-the-badge&logo=githubactions&logoColor=white)
-![Nginx](https://img.shields.io/badge/Nginx-009639.svg?&style=for-the-badge&logo=Nginx&logoColor=white)
